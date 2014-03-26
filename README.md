@@ -1,4 +1,4 @@
-concrete5_searchblox
-====================
+concrete5_user_group_attribute
+==============================
 
-Concrete5 package for SearchBlox
+An attribute for selecting/associating user groups.
