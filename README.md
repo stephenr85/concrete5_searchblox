@@ -1,4 +1,4 @@
-concrete5_user_group_attribute
+concrete5_searchblox
 ==============================
 
-An attribute for selecting/associating user groups.
+An addon for integrating SearchBlox and Concrete5.
