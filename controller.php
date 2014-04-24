@@ -38,12 +38,4 @@ class SearchbloxPackage extends Package {
 		), $pkg);
 		
 	}
-	
-	public function api(){
-		if(!is_object($this->api)){
-			Loader::library('searchblox', 'searchblox');
-			$this->api = new SearchBloxRestClient($this->config('api_url'), $this->config('api_key'));
-		}
-		return $this->api;
-	}
 }

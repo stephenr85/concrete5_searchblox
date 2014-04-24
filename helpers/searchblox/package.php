@@ -1,4 +1,4 @@
-<?php defined('C5_EXECUTE') or die;
+<?php defined('C5_EXECUTE') or die(_("Access Denied."));
 
 class SearchbloxPackageHelper {
 
@@ -108,7 +108,7 @@ class SearchbloxPackageHelper {
 		return true;
 	}
 
-	public function addOrRefreshBlockType($handle, $pkg){
+	public function addBlockType($handle, $pkg){
 		$blockType = BlockType::getByHandle($handle);
 		if(!$blockType) {
 			BlockType::installBlockTypeFromPackage($handle, $pkg); 

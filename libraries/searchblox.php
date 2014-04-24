@@ -1,11 +1,11 @@
 <?php
 
-
 class SearchBloxClient {
 	
 	public $baseUrl;
 	public $apiKey;
 	public $curl;
+	public $http;
 	
 	public function __construct($baseUrl, $apiKey){
 		
@@ -17,8 +17,8 @@ class SearchBloxClient {
 
 		// Set some global cURL options
 		curl_setopt_array($this->curl, array(
-			CURLOPT_USERPWD        => $user . ':' . $pass,
-			CURLOPT_FOLLOWLOCATION => true, // Follow redirects
+			//CURLOPT_USERPWD        => $user . ':' . $pass,
+			//CURLOPT_FOLLOWLOCATION => true, // Follow redirects
 			CURLOPT_HTTPHEADER     => array('Content-type: xml' ), // Set the type
 			CURLOPT_RETURNTRANSFER => true, // Return response to variable
 			CURLOPT_CONNECTTIMEOUT => 4,
@@ -33,7 +33,7 @@ class SearchBloxClient {
 
 		$this->url = $this->baseUrl . $path;
 
-		if( gettype($params) == 'object' ):
+		if( is_object($params) || is_array($params)):
 			$this->url .= '?' . $this->formatParams($params);
 		endif;
 
@@ -71,15 +71,15 @@ class SearchBloxClient {
 		$this->statusCode = NULL;
 		$this->statusMessage = NULL;
 		
-		$body = curl_exec($ch);
-		if(curl_errno($ch))	{
-			echo 'searchblox_curl_warning';
-			curl_close($ch);
+		$body = $this->http->response;
+		if(curl_errno($this->curl))	{
+			curl_close($this->curl);
 			$error_count++;
 		}
 		else {
-			curl_close($ch);
-		
+			curl_close($this->curl);
+			$this->curl = NULL;
+
 			$xml = simplexml_load_string($body);
 			global $statuscode;
 			$statuscode = (string) $xml->statuscode;
@@ -134,8 +134,8 @@ class SearchBloxClient {
 	
 	// Build a valid query string from an object
 	public function formatParams( $params ) {
-		if( gettype($params) != 'object' ):
-			throw new Exception('Params must be an object');
+		if( !is_object($params) && !is_array($params) ):
+			throw new Exception('Params must be an object or array.');
 		else:
 			$pairs = array();
 			foreach( $params as $name => $value ):
@@ -180,27 +180,29 @@ class SearchBloxClient {
 		<document colname="'.$colName.'"/>
 		</searchblox>
 		';
-		return $this->post($this->baseUrl.'/api/rest/clear', NULL, $postData);	
+		return $this->post('/api/rest/clear', NULL, $postData);	
 	}
 	
 	// http://www.searchblox.com/developers-2/api-2/search - see "collections" node
 	public function getCollections(){
 		$xml = $this->search(array('pagesize'=>1));
 		$collections = array();
-		foreach($xml->collection as $node){
-			$collections[$node->id] = $node->name;	
+		foreach($xml->searchform->collections->collection as $node){
+			$collections[(string)$node['id']] = (string)$node['name'];
 		}
 		return $collections;
 	}
 	
 	// http://www.searchblox.com/developers-2/api-2/search
 	public function search($params) {
-		return $this->get($this->baseUrl.'/servlet/SearchServlet', $params);
+		return $this->get('/servlet/SearchServlet', $params);
 	}
 	
 	/* Destructor */
 	public function __destruct() {
-		// Destroy the cURL object
-		curl_close($this->curl);
+		if($this->curl){
+			// Destroy the cURL object
+			curl_close($this->curl);
+		}
 	}
 }

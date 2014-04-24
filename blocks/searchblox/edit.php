@@ -3,7 +3,7 @@
 
 $form = Loader::helper('form');
 
-$availableCollections = array(''=>'Default') + $availableCollections;
+$availableCollections = array(''=>'Default');// + $availableCollections;
 ?>
 
 <div class="control-group">
