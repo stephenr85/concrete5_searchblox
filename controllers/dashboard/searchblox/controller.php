@@ -9,7 +9,7 @@ class DashboardSearchbloxController extends Controller {
 	}
 	
 	public function on_before_render(){
-		$this->set('message', implode('<br>', $this->message));
+		$this->set('message', !empty($this->message) ? implode('<br>', $this->message) : NULL);
 		$this->set('error', $this->error);
 		parent::on_before_render();	
 	}
