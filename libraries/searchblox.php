@@ -185,7 +185,7 @@ class SearchBloxClient {
 	
 	// http://www.searchblox.com/developers-2/api-2/search - see "collections" node
 	public function getCollections(){
-		$xml = $this->search(array('pagesize'=>1));
+		$xml = $this->search(array('pagesize'=>1, 'query'=>'anything'));
 		$collections = array();
 		foreach($xml->searchform->collections->collection as $node){
 			$collections[(string)$node['id']] = (string)$node['name'];
@@ -195,6 +195,7 @@ class SearchBloxClient {
 	
 	// http://www.searchblox.com/developers-2/api-2/search
 	public function search($params) {
+		$params['xsl'] = 'xml';
 		return $this->get('/servlet/SearchServlet', $params);
 	}
 	

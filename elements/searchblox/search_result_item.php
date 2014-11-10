@@ -3,9 +3,12 @@
 ?>
 <div class="searchblox-result <?php if(is_array($cssClasses)) echo implode(' ', $cssClasses) ?>">	
 	<h4 class="title"><a href="<?php echo $result->url ?>"><?php echo $searchbloxHelper->replaceHighlights($result->title) ?></a></h4>	
-	<!--div class="desc"><?php echo $result->description ?></div-->
 	<p class="info">
+		<?php if($result->context){ ?>
 		<span class="context"><?php echo $searchbloxHelper->replaceHighlights($result->context) ?></span>
+		<?php }else if($result->description){ ?>
+		<span class="description"><?php echo $result->description ?></span>
+		<?php } ?>
 		<br>
 		<span class="meta">
 			<small>

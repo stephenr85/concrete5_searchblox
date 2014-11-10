@@ -21,15 +21,12 @@ class SearchbloxHelper {
 			$content = $this->innerXML($content);
 		}
 		$content = preg_replace('/highlight>/', 'mark>', $content);
+		$content = preg_replace('/text>/', 'span>', $content);
 		return $content;
 	}
 
 	public function innerXML($element){
         $tag = $element->getName();
-        $value = $element->__toString();
-        if(empty($value)){
-            return null;
-        }
         return preg_replace('!<'. $tag .'(?:[^>]*)>(.*)</'. $tag .'>!Ums', '$1', $element->asXml());
     }
 
